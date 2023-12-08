@@ -48,18 +48,14 @@ export async function getModelGenContract(providerOrSigner, address) {
 }
 
 export async function getNftContract() {
-    const modelGenAddr = await getModelGenAddress()
+    const modelGenAddr = await getModelGenAddress();
 
     const modal = new web3modal();
     const connection = await modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
     const signer = provider.getSigner();
-    const nftContract = new ethers.Contract(
-        modelGenAddr,
-        NftAbi,
-        signer,
-    )
-    return nftContract
+    const nftContract = new ethers.Contract(modelGenAddr, NftAbi, signer);
+    return nftContract;
 }
 
 export async function getUserAddress() {
@@ -116,7 +112,47 @@ async function fetch(user) {
     return res;
 }
 
-async function callModelGenAPI() {}
+async function callModelGenAPI(_prompt) {
+    const apiUrl = "https://api.thecatapi.com/v1/images/search/";
+
+    axios
+        .get(apiUrl)
+        .then((response) => {
+            console.log("Response:", response.data[0].url);
+            return response.data[0].url;
+        })
+        .catch((error) => {
+            console.error("Error:", error.message);
+        });
+}
+
+async function createURI(_name, _prompt) {
+    const image = await callModelGenAPI(_prompt)
+    // if (!_name || !_prompt || !image) return; 
+    console.log("img:", image);
+    const data = JSON.stringify({ _name, _prompt, image });
+    const files = [new File([data], "data.json")];
+    const metaCID = await uploadToIPFS(files);
+    const url = `https://ipfs.io/ipfs/${metaCID}/data.json`;
+    console.log(url);
+    return url;
+}
+
+export async function createModelGen(_name, _prompt) {
+    const uri = await createURI(_name, _prompt)
+    const contract = await getRegistryContract(true);
+    const tx = await contract.createModel(uri);
+    await tx.wait();
+    console.log("Account Created successfully");
+}
+
+export async function createPosterAd(modelId) {
+    const contract = await getRegistryContract(true);
+    const tx = await contract.callImageAdGen(modelId);
+    await tx.wait();
+    console.log("Created successfully");
+}
+
 
 // export async function getPosterAds(modelId) {
 
@@ -130,28 +166,14 @@ async function callModelGenAPI() {}
 //     console.log("error:", error);
 // }
 
-export async function createModelGen(_prompt) {
-    const contract = await getRegistryContract(true);
-    const tx = await contract.createModel([_prompt]);
-    await tx.wait();
-    console.log("Created successfully");
-}
-
-export async function createPosterAd(modelId) {
-    const contract = await getRegistryContract(true);
-    const tx = await contract.callImageAdGen(modelId);
-    await tx.wait();
-    console.log("Created successfully");
-}
-
 export async function listForSale(modelId, _price) {
-    const nftContract = await getNftContract()
-    const approve = await nftContract.approve(registryAddress, modelId)
-    console.log("_price", _price)
+    const nftContract = await getNftContract();
+    const approve = await nftContract.approve(registryAddress, modelId);
+    console.log("_price", _price);
     const price = ethers.utils.parseEther(_price);
     const contract = await getRegistryContract(true);
     const tx = await contract.listModelForSale(modelId, price);
-    await approve.wait()
+    await approve.wait();
     await tx.wait();
     console.log("Listed successfully");
 }
@@ -250,3 +272,18 @@ export async function fetchMyModels() {
     //     return filteredArray;
     // }
 }
+
+function getAccessToken() {
+    // return process.env.NEXT_PUBLIC_Web3StorageID
+    return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDkyMjkyQjQ5YzFjN2ExMzhERWQxQzQ3NGNlNmEyNmM1NURFNWQ0REQiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NjUyMzg2MDc1NDEsIm5hbWUiOiJNZXRhRmkifQ.cwyjEIx8vXtTnn8Y3vctroo_rooHV4ww_2xKY-MT0rs";
+}
+
+function makeStorageClient() {
+    return new Web3Storage({ token: getAccessToken() });
+}
+
+export const uploadToIPFS = async (files) => {
+    const client = makeStorageClient();
+    const cid = await client.put(files);
+    return cid;
+};
