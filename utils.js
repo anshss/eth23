@@ -72,7 +72,7 @@ export async function getModelGenAddress() {
     return data;
 }
 
-export async function getModelImage(tokenId) {
+export async function getModelMetadata(tokenId) {
     const modelGenAddress = await getModelGenAddress();
     const contract = await getModelGenContract(false, modelGenAddress);
     const data = await contract.tokenURI(tokenId);
@@ -115,20 +115,18 @@ async function fetch(user) {
 async function callModelGenAPI(_prompt) {
     const apiUrl = "https://api.thecatapi.com/v1/images/search/";
 
-    axios
-        .get(apiUrl)
-        .then((response) => {
-            console.log("Response:", response.data[0].url);
-            return response.data[0].url;
-        })
-        .catch((error) => {
-            console.error("Error:", error.message);
-        });
+    try {
+        const response = await axios.get(apiUrl);
+        return response.data[0].url;
+    } catch (error) {
+        console.error("Error fetching cat data:", error.message);
+        return null;
+    }
 }
 
 async function createURI(_name, _prompt) {
-    const image = await callModelGenAPI(_prompt)
-    // if (!_name || !_prompt || !image) return; 
+    const image = await callModelGenAPI(_prompt);
+    // if (!_name || !_prompt || !image) return;
     console.log("img:", image);
     const data = JSON.stringify({ _name, _prompt, image });
     const files = [new File([data], "data.json")];
@@ -139,7 +137,7 @@ async function createURI(_name, _prompt) {
 }
 
 export async function createModelGen(_name, _prompt) {
-    const uri = await createURI(_name, _prompt)
+    const uri = await createURI(_name, _prompt);
     const contract = await getRegistryContract(true);
     const tx = await contract.createModel(uri);
     await tx.wait();
@@ -152,7 +150,6 @@ export async function createPosterAd(modelId) {
     await tx.wait();
     console.log("Created successfully");
 }
-
 
 // export async function getPosterAds(modelId) {
 
@@ -192,31 +189,28 @@ export async function buyModel(modelId, _price) {
 export async function fetchAllModels() {
     const contract = await getRegistryContract();
 
+    const modelGenAddress = await getModelGenAddress();
+    const modelGenContract = await getModelGenContract(false, modelGenAddress);
+
     const data = await contract.fetchAllModel();
     // console.log("data", data)
     const items = await Promise.all(
         data.map(async (i) => {
-            // const tokenUri = await contract.uri(i.ticketId.toString());
-            // console.log(tokenUri);
-            // const meta = await axios.get(tokenUri);
-            const modelImg = await getModelImage(i.modelId.toNumber());
+            const metadataUrl = await modelGenContract.tokenURI(i.modelId.toNumber());
+            const metadata = await axios.get(metadataUrl);
             let price = ethers.utils.formatEther(i.price);
             let item = {
-                // name: meta.data.name,
-                // venue: meta.data.venue,
-                // date: meta.data.date,
-                // description: meta.data.description,
-                // cover: meta.data.cover,
-                // NftURI: tokenUri,
+                name: metadata.data._name,
+                prompt: metadata.data._prompt,
+                modelImg: metadata.data.image,
                 tba: i.tba.toString(),
                 imgAdGen: i.imgAdGen.toString(),
                 modelId: i.modelId.toNumber(),
-                modelNFT: i.modelNFT.toString(),
                 creator: i.creator.toString(),
                 owner: i.owner.toString(),
                 price,
                 sale: i.sale,
-                modelImg,
+                // metadata,
             };
             return item;
         })

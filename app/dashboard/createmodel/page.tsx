@@ -1,11 +1,12 @@
 "use client";
 import { createModelGen } from "@/utils";
 
-const Dashboard = () => {
+const CreateModel = () => {
 
     async function createModelGenCall() {
         await createModelGen("test", "test-prompt")
     }
+
     return (
         <div>
             <p>Dashboard</p>
@@ -15,4 +16,4 @@ const Dashboard = () => {
     );
 };
 
-export default Dashboard;
+export default CreateModel;
