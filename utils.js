@@ -110,6 +110,12 @@ export async function getContentByModelId(modelId) {
     return data;
 }
 
+export async function getContentByTBA(tba) {
+    const data = await fetch(tba);
+    console.log(data);
+    return data;
+}
+
 export async function getTBAFromModelId(modelId) {
     const contract = await getRegistryContract();
     const data = await contract.idToModelAcc(modelId);
@@ -220,9 +226,15 @@ export async function buyModel(modelId, _price) {
 
 export async function fetchAllModels() {
     const contract = await getRegistryContract();
+    console.log("1")
 
     const modelGenAddress = await getModelGenAddress();
+
+    console.log("gen addr", modelGenAddress)
+    
     const modelGenContract = await getModelGenContract(false, modelGenAddress);
+
+    console.log("2")
 
     const data = await contract.fetchAllModel();
     // console.log("data", data)
@@ -247,6 +259,9 @@ export async function fetchAllModels() {
             return item;
         })
     );
+
+    console.log("3")
+
     allModels = items;
     console.log("All Models", items);
     return items;

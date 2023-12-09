@@ -8,13 +8,15 @@ import "react-toastify/dist/ReactToastify.css";
 
 const CreateModel = () => {
     const [formInput, setFormInput] = useState({
-        modelName: "",
-        modelPrompt: "",
+        modelName: "test-name",
+        modelPrompt: "test-prompt",
     });
     const [loading, setLoading] = useState(false);
 
     async function createModelGenCall() {
+        setLoading(true)
         await createModelGen("test", "test-prompt");
+        // initialize xmtp
         toast.success("TBAI Account Created!", {
             position: "bottom-left",
             autoClose: 5000,
@@ -25,6 +27,7 @@ const CreateModel = () => {
             progress: undefined,
             theme: "dark",
         });
+        setLoading(false)
     }
 
     return (
@@ -36,7 +39,7 @@ const CreateModel = () => {
                     <div className="text-white">
                         <div className="mt-10">
                             <h1 className="font-bold text-3xl text-center">
-                                Generate a Model
+                                Generate Account
                             </h1>
                         </div>
 

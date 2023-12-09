@@ -65,7 +65,7 @@ export default function SideBar () {
               >
                   <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
                   <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
-                <span className="flex-1 ml-3 whitespace-nowrap">Content By Id</span>
+                <span className="flex-1 ml-3 whitespace-nowrap">Content By TBA</span>
               </Link>
             </li>
           </ul>

@@ -10,17 +10,17 @@ import { saveAs } from "file-saver";
 const CreateContent = () => {
     const [loading, setLoading] = useState(false);
     const [formInput, setFormInput] = useState({
-        productDescription: "",
+        productDescription: "test-prompt",
         productImage: "",
-        modelId: "",
+        tba: "",
     });
     const [imgLoading, setImgLoading] = useState(false);
 
-    const [linkos, setLinkos] = useState([]);
-
     async function createContentGenCall() {
+        setLoading(true)
         const productImage = await uploadProductImageToIPFS();
-        await createStaticContent(productImage, "test-prompt", "2");
+        await createStaticContent(productImage, formInput.productDescription, formInput.tba);
+        setLoading(false)
     }
 
     async function uploadProductImageToIPFS() {}
@@ -44,7 +44,7 @@ const CreateContent = () => {
                     <div className="text-white">
                         <div className="mt-10">
                             <h1 className="font-bold text-3xl text-center">
-                                Generate an Image Ad
+                                Generate Content
                             </h1>
                         </div>
 
@@ -121,19 +121,19 @@ const CreateContent = () => {
 
                                 <div className="flex">
                                     <div className="w-[12%] justify-center flex-shrink-0 cursor-default z-10 inline-flex items-center py-4 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-l-lg focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700  dark:focus:ring-gray-700 dark:text-gray-400 dark:border-gray-600">
-                                        <p>ModelId</p>
+                                        <p>TBA</p>
                                     </div>
                                     <div className="relative w-full">
                                         <input
                                             type="search"
                                             className="block p-4 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-r-lg border-l-gray-50 border-l-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-l-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
-                                            placeholder="Enter your model's id"
+                                            placeholder="Enter your TBA Address"
                                             required
-                                            value={formInput.modelId}
+                                            value={formInput.tba}
                                             onChange={(e) => {
                                                 setFormInput({
                                                     ...formInput,
-                                                    modelId: e.target.value,
+                                                    tba: e.target.value,
                                                 });
                                             }}
                                         />

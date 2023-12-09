@@ -1,22 +1,24 @@
 "use client";
 
-import { getContentByModelId, getTokensURI } from "@/utils";
-import { useDebugValue, useEffect, useState } from "react";
+import { getContentByTBA, getTokensURI } from "@/utils";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { saveAs } from "file-saver";
 import NavBar from "@/components/NavBar";
 import SideBar from "@/components/SideBar";
 
-const FetchContentById = () => {
+const FetchContentByTBA = () => {
     const [data, setData] = useState<any>([]);
     const [loading, setLoading] = useState(false);
     const [formInput, setFormInput] = useState({
-        modelId: "",
+        tba: "",
     });
 
     async function fetchDataCall() {
-        const results = await getContentByModelId(formInput.modelId);
+        setLoading(true)
+        const results = await getContentByTBA(formInput.tba);
         setData(results);
+        setLoading(false)
     }
 
     async function Download(_fileName: any, _fileUrl: any) {
@@ -50,7 +52,7 @@ const FetchContentById = () => {
             <div className="mt-10 relative">
                 <div className="flex gap-5 block w-3/4 relative p-6 mx-auto cursor-pointer bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
                     <img src={fetchedURI.image} width="100px" />
-                    {/* <p>Model Id: {prop.modelId}</p> */}
+                    {/* <p>Model Id: {prop.tba}</p> */}
                     <div className="flex justify-between">
                         <div>
                             <p className="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
@@ -86,19 +88,19 @@ const FetchContentById = () => {
                 <div className="p-4 sm:ml-64 pt-20 bg-gray-900 w-full min-h-screen">
                     <div className="flex mt-4">
                         <div className="w-[12%] justify-center flex-shrink-0 cursor-default z-10 inline-flex items-center py-4 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-l-lg focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700  dark:focus:ring-gray-700 dark:text-gray-400 dark:border-gray-600">
-                            <p>ModelId</p>
+                            <p>TBA</p>
                         </div>
                         <div className="relative w-full">
                             <input
                                 type="search"
                                 className="block p-4 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-r-lg border-l-gray-50 border-l-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-l-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
-                                placeholder="Enter your model's id"
+                                placeholder="Enter your TBA Address"
                                 required
-                                value={formInput.modelId}
+                                value={formInput.tba}
                                 onChange={(e) => {
                                     setFormInput({
                                         ...formInput,
-                                        modelId: e.target.value,
+                                        tba: e.target.value,
                                     });
                                 }}
                             />
@@ -124,4 +126,4 @@ const FetchContentById = () => {
     );
 };
 
-export default FetchContentById;
+export default FetchContentByTBA;
