@@ -6,10 +6,10 @@ import { Client } from "@xmtp/xmtp-js";
 const Messages = ({
     receiver
 }) => {
-    const [msgs, setMsgs] = React.useState(false);
+    const [msgs, setMsgs] = React.useState([]);
     useEffect(()=> {
         getMessages()
-    }, [])
+    }, [msgs])
 
     const getMessages = async () => {
         const signer = await getSigner();
@@ -18,10 +18,19 @@ const Messages = ({
         const conversation = await xmtp.conversations.newConversation(
             receiver
           );
-        console.log('conversation', conversation)
+        const messages = await conversation.messages();
+        console.log('msgs', messages,  'values of messages', Object.values(messages))
+        setMsgs(Object.values(messages))
+        // console.log('conversations existing', conversation)
     }
+    console.log('msgs', msgs)
     return(<div>
-        Messsages
+        {msgs.map(e=>(<div>
+            {console.log('e', e)}
+            <p>{e.senderAddress}: {e.content}</p>
+            </div>))}
+
+            asdasd
     </div>)
 }
 

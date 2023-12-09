@@ -18,13 +18,10 @@ const ChatRoom = () => {
 
   var evnt = ''
 
-  console.log('entered chatroom')
-
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(window.location.search);
     const sndr = urlSearchParams.get('sender');
     const rcvr = urlSearchParams.get('receiver')
-    console.log('sender', sndr, 'receiver', rcvr);
     setSender(sndr||'')
     setReceiver(rcvr||'')
     receiveSigner()
@@ -44,7 +41,7 @@ const ChatRoom = () => {
     console.log('postMessage', postMessage)
     const xmtp = await Client.create(signer, { env: "dev" });
     const conversation =await xmtp.conversations.newConversation(receiver)
-    await conversation.send(postMessage);
+    await conversation.send(evnt);
   }
 
 
@@ -58,7 +55,7 @@ const ChatRoom = () => {
               HI, {sender}<br/>
               Chat with {receiver}
               <Messages receiver={receiver}/>
-              <input onChange={(e)=> {evnt = (e.target.value)}}></input>
+              <input className="text-black" onChange={(e)=> {evnt = (e.target.value)}}></input>
               <button onClick={sendMessage}>Send!</button>
             </div>
         </div>
