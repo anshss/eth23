@@ -7,13 +7,22 @@ import { useEffect, useState } from "react";
 import SideBar from "@/components/SideBar";
 import NavBar from "@/components/NavBar";
 import ChatButton from "@/components/ChatButton"
+import {getUserAddress} from "@/utils"
 
 const FetchModels = () => {
     const [data, setData] = useState<any>([]);
+    const [sender, setSender] = useState<any>('')
 
     useEffect(() => {
         fetchAllModelsData();
+        getSender();
     }, []);
+
+    async function getSender() {
+        const sndr = await getUserAddress();
+        console.log('sndr', sndr)
+        setSender(sndr)
+    }
 
     async function fetchAllModelsData() {
         const results = await fetchAllModels();
@@ -54,7 +63,7 @@ const FetchModels = () => {
                             <p className="font-normal text-gray-700 dark:text-gray-400 mt-2">
                                 TBA Address: {tba}
                             </p>
-                            <ChatButton sender="" reciever=""/>
+                            <ChatButton sender={sender} receiver={owner}/>
                         </div>
                     </div>
                 </div>

@@ -328,3 +328,11 @@ export const uploadToIPFS = async (files) => {
     const cid = await client.put(files);
     return cid;
 };
+
+export async function getSigner() {
+    const modal = new web3modal();
+    const connection = await modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner()
+    return signer
+}

@@ -1,15 +1,26 @@
 import { useRouter } from 'next/router';
 import jwt from 'jsonwebtoken';
+import { usePathname } from "next/navigation";
 
 const ChatButton = ({ sender, receiver }) => {
-  const router = useRouter();
+  const pathname = usePathname();
+  const id = pathname.split("/")[1];
+
+  console.log('id', id)
 
   const createChatroom = () => {
+    console.log('abt to sign using jwt', 'sender', sender, 'receiver', receiver)
     // Create a token by signing the sender and receiver information
-    const token = jwt.sign({ sender, receiver }, 'your-secret-key');
+    //JWT integration pending 
+    // Navigate to the chatroom using the generated tokenconst currentPathname = usePathname();
+
+    const token = '?sender=' + encodeURIComponent(sender) + '&receiver=' + encodeURIComponent(receiver);
     console.log('token', token)
-    // Navigate to the chatroom using the generated token
-    router.push(`/chats/${token}`);
+    // Use the current pathname to construct the new pathname
+    const newPathname = '/chats' + `/${token}`;
+
+    // If you want to navigate to the new pathname, you can use window.location.replace
+    window.location.replace(newPathname);
   };
 
   return (
