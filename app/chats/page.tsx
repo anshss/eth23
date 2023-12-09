@@ -15,21 +15,49 @@ const ChatRoom = () => {
   const [receiver, setReceiver] = useState('');
   const [postMessage, setPostMessage] = useState('')
   const [signer, setSigner] = useState(null)
+  const [msgs, setMsgs] = useState<any>([])
+  const [xmtp, setXMTP] = useState<any>(null)
+  const [conversation, setConversation] = useState<any>(null)
 
   var evnt = ''
 
   useEffect(() => {
+    getData()
+  }, []);
+
+  const getXMTPandMessages = async () => {
+    const signer = await getSigner();
+    const sender = await signer.getAddress();
+    const xmtpTMP = await Client.create(signer, {env: "dev"})
+    setXMTP(xmtpTMP)
+    const conversationTmp = await xmtpTMP.conversations.newConversation(
+        receiver
+      );
+    setConversation(conversationTmp)
+    const messages = await conversationTmp.messages();
+    console.log('msgs', messages,  'values of messages', Object.values(messages))
+    setMsgs(Object.values(messages))
+  }
+
+  const getData = async () => {
     const urlSearchParams = new URLSearchParams(window.location.search);
     const sndr = urlSearchParams.get('sender');
     const rcvr = urlSearchParams.get('receiver')
     setSender(sndr||'')
     setReceiver(rcvr||'')
-    receiveSigner()
-  }, []);
-
-  const receiveSigner = async () => {
     const s: any = await getSigner();
     setSigner(s)
+    const signer = await getSigner();
+    const sender = await signer.getAddress();
+    const xmtpTMP = await Client.create(signer, {env: "dev"})
+    setXMTP(xmtpTMP)
+    const conversationTmp = await xmtpTMP.conversations.newConversation(
+        rcvr||''
+      );
+    setConversation(conversationTmp)
+    const messages = await conversationTmp.messages();
+    console.log('msgs', messages,  'values of messages', Object.values(messages))
+    setMsgs(Object.values(messages))
   }
 
   if (!sender || !receiver) {
@@ -37,11 +65,17 @@ const ChatRoom = () => {
     return <p>Loading...</p>;
   }
 
+  const updateMessage = async () => {
+    const messages = await conversation.messages();
+    setMsgs(Object.values(messages))
+  }
+
   const sendMessage = async () => {
     console.log('postMessage', postMessage)
     const xmtp = await Client.create(signer, { env: "dev" });
     const conversation =await xmtp.conversations.newConversation(receiver)
     await conversation.send(evnt);
+    await updateMessage()
   }
 
 
@@ -54,7 +88,7 @@ const ChatRoom = () => {
               {/* Hi, {sender} <br/>Chat with {receiver} */}
               HI, {sender}<br/>
               Chat with {receiver}
-              <Messages receiver={receiver}/>
+              <Messages msgs={msgs}/>
               <input className="text-black" onChange={(e)=> {evnt = (e.target.value)}}></input>
               <button onClick={sendMessage}>Send!</button>
             </div>
