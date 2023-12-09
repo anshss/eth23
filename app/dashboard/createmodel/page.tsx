@@ -9,8 +9,8 @@ const CreateModel = () => {
 
     return (
         <div>
-            <p>Dashboard</p>
-            <input placeholder="prompt please" />
+            <p>Create Model</p>
+            {/* <input placeholder="prompt please" /> */}
             <button onClick={createModelGenCall}>gen</button>
         </div>
     );

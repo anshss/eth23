@@ -80,20 +80,6 @@ export async function getModelMetadata(tokenId) {
     return data;
 }
 
-export async function getPosterAdsByModelId(modelId) {
-    const address = await getTBAFromModelId(modelId);
-    const data = await fetch(address);
-    console.log(data);
-    return data;
-}
-
-export async function getTBAFromModelId(modelId) {
-    const contract = await getRegistryContract();
-    const data = await contract.idToModelAcc(modelId);
-    console.log(data[0]);
-    return data[0];
-}
-
 async function fetch(user) {
     const options = {
         method: "GET",
@@ -112,6 +98,20 @@ async function fetch(user) {
     return res;
 }
 
+export async function getPosterAdsByModelId(modelId) {
+    const address = await getTBAFromModelId(modelId);
+    const data = await fetch(address);
+    console.log(data);
+    return data;
+}
+
+export async function getTBAFromModelId(modelId) {
+    const contract = await getRegistryContract();
+    const data = await contract.idToModelAcc(modelId);
+    console.log(data[0]);
+    return data[0];
+}
+
 async function callModelGenAPI(_prompt) {
     const apiUrl = "https://api.thecatapi.com/v1/images/search/";
 
@@ -124,7 +124,19 @@ async function callModelGenAPI(_prompt) {
     }
 }
 
-async function createURI(_name, _prompt) {
+async function callStaticContentGenAPI(_prompt) {
+    const apiUrl = "https://api.thecatapi.com/v1/images/search/";
+
+    try {
+        const response = await axios.get(apiUrl);
+        return response.data[0].url;
+    } catch (error) {
+        console.error("Error fetching cat data:", error.message);
+        return null;
+    }
+}
+
+async function createModelURI(_name, _prompt) {
     const image = await callModelGenAPI(_prompt);
     // if (!_name || !_prompt || !image) return;
     console.log("img:", image);
@@ -137,18 +149,33 @@ async function createURI(_name, _prompt) {
 }
 
 export async function createModelGen(_name, _prompt) {
-    const uri = await createURI(_name, _prompt);
+    const uri = await createModelURI(_name, _prompt);
     const contract = await getRegistryContract(true);
     const tx = await contract.createModel(uri);
     await tx.wait();
     console.log("Account Created successfully");
 }
 
-export async function createPosterAd(modelId) {
+async function createContentURI(_productImage, _prompt) {
+    const image = await callStaticContentGenAPI(_prompt);
+    // if (!_productImage || !_prompt || !image) return;
+    console.log("img:", image);
+    const data = JSON.stringify({ _productImage, _prompt, image });
+    const files = [new File([data], "data.json")];
+    const metaCID = await uploadToIPFS(files);
+    const url = `https://ipfs.io/ipfs/${metaCID}/data.json`;
+    console.log(url);
+    return url;
+}
+
+export async function createStaticContent(_productImage, _prompt, _modelId) {
+    const uri = await createContentURI(_productImage, _prompt);
+
     const contract = await getRegistryContract(true);
-    const tx = await contract.callImageAdGen(modelId);
+    // const tx = await contract.callImageAdGen(_modelId, uri);
+    const tx = await contract.callContentGen(_modelId, uri);
     await tx.wait();
-    console.log("Created successfully");
+    console.log("Content Created successfully");
 }
 
 // export async function getPosterAds(modelId) {
