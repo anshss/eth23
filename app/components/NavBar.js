@@ -13,7 +13,7 @@ export default function NavBar() {
   return (
     <Navbar className="navbar">
       {/* Wrap your content in another element with the desired style */}
-      <div>NavBar</div>
+      <div>DeSo by TBAI </div>
     </Navbar>
   );
 }

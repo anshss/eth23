@@ -4,6 +4,21 @@ import React from "react";
 import { PushAPI, CONSTANTS } from "@pushprotocol/restapi";
 import { ethers } from "ethers";
 import web3modal from "web3modal";
+import styled from "styled-components";
+import NavBar from "../components/NavBar";
+import SideBar from "../components/SideBar";
+
+const StyledHome = styled.div`
+  background-image: linear-gradient(to bottom, #a663de, #a333c8, #7346e5, #2962ff);
+  color: white;
+  display: flex;
+  flex-direction: row;
+  /* Set width to 100% */
+  width: 100vw;
+  /* Ensure child components fill the remaining space */
+  align-items: center;
+`;
+
 
 const Test = () => {
     async function callPush() {
@@ -75,8 +90,12 @@ const Test = () => {
 
     return (
         <div>
-            <p>PUSH</p>
-            <button onClick={callPush}>sendBtn</button>
+            <NavBar/>
+            <StyledHome className="styledhome">
+                <SideBar/>
+                <p>PUSH</p>
+                <button onClick={callPush}>sendBtn</button>
+            </StyledHome>
         </div>
     );
 };
