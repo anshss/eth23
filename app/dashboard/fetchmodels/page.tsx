@@ -5,8 +5,8 @@
 import { fetchAllModels } from "@/utils";
 import { useEffect, useState } from "react";
 import styled from "styled-components"
-import SideBar from "@/app/components/SideBar";
-import NavBar from "@/app/components/NavBar";
+import SideBar from "@/components/SideBar";
+import NavBar from "@/components/NavBar";
 
 const Models = styled.div`
     

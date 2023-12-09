@@ -5,8 +5,8 @@ import { PushAPI, CONSTANTS } from "@pushprotocol/restapi";
 import { ethers } from "ethers";
 import web3modal from "web3modal";
 import styled from "styled-components";
-import NavBar from "@/app/components/NavBar";
-import SideBar from "@/app/components/SideBar";
+import NavBar from "@/components/NavBar";
+import SideBar from "@/components/SideBar";
 
 const Logout = () => {
     

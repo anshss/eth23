@@ -1,9 +1,9 @@
 "use client";
 
 import { createStaticContent } from "@/utils";
-import NavBar from "@/app/components/NavBar";
+import NavBar from "@/components/NavBar";
 import styled from "styled-components"
-import SideBar from "@/app/components/SideBar";
+import SideBar from "@/components/SideBar";
 
 const Analytics = () => {
 
