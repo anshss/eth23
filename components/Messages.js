@@ -9,7 +9,7 @@ const Messages = ({
     const [msgs, setMsgs] = React.useState([]);
     useEffect(()=> {
         getMessages()
-    }, [msgs])
+    }, [])
 
     const getMessages = async () => {
         const signer = await getSigner();
