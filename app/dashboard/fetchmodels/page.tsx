@@ -12,17 +12,6 @@ const Models = styled.div`
     
 `
 
-const StyledHome = styled.div`
-  background-image: linear-gradient(to bottom, #a663de, #a333c8, #7346e5, #2962ff);
-  color: white;
-  display: flex;
-  flex-direction: row;
-  /* Set width to 100% */
-  width: 100vw;
-  /* Ensure child components fill the remaining space */
-  align-items: center;
-`;
-
 const FetchModels = () => {
     const [data, setData] = useState<any>([]);
 
@@ -56,7 +45,6 @@ const FetchModels = () => {
     return (
         <div>
             <NavBar/>
-            <StyledHome>
                 <SideBar/>
                 <Models>
                 <p>All Models</p>
@@ -66,7 +54,6 @@ const FetchModels = () => {
                     );
                 })}
                 </Models>
-            </StyledHome>
         </div>
     );
 };
