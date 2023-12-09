@@ -1,7 +1,7 @@
 "use client";
 import web3modal from "web3modal";
 import { ethers } from "ethers";
-import { registryAddress, registryAbi, modelGenAbi, NftAbi } from "./config";
+import { registryAddress, registryAbi, modelGenAbi, UriABI } from "./config";
 import axios from "axios";
 import { Web3Storage } from "web3.storage";
 import { init, fetchQuery } from "@airstack/node";
@@ -47,14 +47,12 @@ export async function getModelGenContract(providerOrSigner, address) {
     return contract;
 }
 
-export async function getNftContract() {
-    const modelGenAddr = await getModelGenAddress();
-
+export async function getNftURIContract(_contractAddress) {
     const modal = new web3modal();
     const connection = await modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
     const signer = provider.getSigner();
-    const nftContract = new ethers.Contract(modelGenAddr, NftAbi, signer);
+    const nftContract = new ethers.Contract(_contractAddress, UriABI, signer);
     return nftContract;
 }
 
@@ -98,7 +96,14 @@ async function fetch(user) {
     return res;
 }
 
-export async function getPosterAdsByModelId(modelId) {
+export async function getTokensURI(address, id) {
+    const contract = await getNftURIContract(address)
+    const uri = await contract.tokenURI(id)
+    // console.log("uri", uri)
+    return uri
+}
+
+export async function getContentByModelId(modelId) {
     const address = await getTBAFromModelId(modelId);
     const data = await fetch(address);
     console.log(data);
