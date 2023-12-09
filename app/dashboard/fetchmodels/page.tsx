@@ -6,6 +6,7 @@ import { fetchAllModels } from "@/utils";
 import { useEffect, useState } from "react";
 import SideBar from "@/components/SideBar";
 import NavBar from "@/components/NavBar";
+import ChatButton from "@/components/ChatButton"
 
 const FetchModels = () => {
     const [data, setData] = useState<any>([]);
@@ -18,6 +19,10 @@ const FetchModels = () => {
         const results = await fetchAllModels();
         setData(results);
         console.log("length", results.length)
+    }
+
+    const createChatroom = async () => {
+        window.location.href
     }
 
     function LinkoCard({
@@ -49,12 +54,7 @@ const FetchModels = () => {
                             <p className="font-normal text-gray-700 dark:text-gray-400 mt-2">
                                 TBA Address: {tba}
                             </p>
-                            <button
-                                // onClick={}
-                                className="h-[40px] inline-flex items-center px-[6%] py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                            >
-                                Chat
-                            </button>
+                            <ChatButton sender="" reciever=""/>
                         </div>
                     </div>
                 </div>
