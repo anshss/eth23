@@ -20,6 +20,7 @@ const StyledHome = styled.div`
 
 
 export default function Home() {
+<<<<<<< Updated upstream
   return (
     <div>
       <NavBar/>
@@ -30,4 +31,27 @@ export default function Home() {
     </div>
     
   );
+=======
+
+    return (
+        <div>
+            <p>Home</p>
+            <Link href="/dashboard/createmodel">
+                <p>createmodel</p>
+            </Link>
+            <Link href="/dashboard/fetchmodels">
+                <p>fetchmodel</p>
+            </Link>
+            <Link href="/dashboard/createcontent">
+                <p>createcontent</p>
+            </Link>
+            <Link href="/dashboard/fetchcontentbyId">
+                <p>fetchcontentbyId</p>
+            </Link>
+            <Link href="/notification">
+                <p>push testing</p>
+            </Link>
+        </div>
+    );
+>>>>>>> Stashed changes
 }

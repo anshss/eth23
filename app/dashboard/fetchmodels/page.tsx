@@ -48,7 +48,7 @@ const FetchModels = () => {
             <div className="mb-4 cursor: pointer" onClick={()=> console.log('clicked')}>
                 <p>tba: {tba}</p>
                 <p>owner: {owner}</p>
-                <img src={image} width="400px"/>
+                <img src={image} width="200px"/>
             </div>
         );
     };
