@@ -27,7 +27,7 @@ const FetchModels = () => {
     async function fetchAllModelsData() {
         const results = await fetchAllModels();
         setData(results);
-        console.log("length", results.length)
+        // console.log("length", results.length)
     }
 
     const createChatroom = async () => {

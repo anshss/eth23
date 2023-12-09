@@ -15,13 +15,13 @@ const FetchContentByTBA = () => {
     });
 
     async function fetchDataCall() {
-        setLoading(true)
+        setLoading(true);
         const results = await getContentByTBA(formInput.tba);
         setData(results);
-        setLoading(false)
+        setLoading(false);
     }
 
-    async function Download(_fileName: any, _fileUrl: any) {
+    async function download(_fileName: any, _fileUrl: any) {
         const name = _fileName;
         const fileUrl = _fileUrl;
         saveAs(fileUrl, name);
@@ -58,16 +58,17 @@ const FetchContentByTBA = () => {
                             <p className="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
                                 Asset Address: {address}
                             </p>
+
+                            <p className="font-normal text-gray-700 dark:text-gray-400 mt-2">
+                                Prompt Used: {fetchedURI._prompt}
+                            </p>
                         </div>
                     </div>
 
                     <div className="flex justify-between">
-                        <p className="font-normal text-gray-700 dark:text-gray-400 mt-2">
-                            Prompt Used: {fetchedURI._prompt}
-                        </p>
                         <button
                             onClick={() => {
-                                Download("TBAI", fetchedURI.image);
+                                download("TBAI", fetchedURI.image);
                             }}
                             className="h-[50px] w-[140px] inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                         >
@@ -80,7 +81,6 @@ const FetchContentByTBA = () => {
     }
 
     return (
-
         <div>
             <NavBar />
             <div className="flex">

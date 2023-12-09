@@ -1,5 +1,6 @@
 const mumbaiAddress = `0x049Ec7B099804C698CC9115D41239E70BF65A337`
 const fujiAddress = ``
+const polygon = `0x1e6E7fb60d210f41bE3c961E6F8425CE81D1939F`
 
 export const registryAddress = mumbaiAddress
 

@@ -9,6 +9,8 @@ import Moralis from "moralis";
 
 let allModels = [];
 
+fetchAllModels();
+
 Moralis.start({
     apiKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6ImRjOWNmODBkLTQwMzctNGNiNS04ZjQ4LTRhYTdjNGE0YmZhZiIsIm9yZ0lkIjoiMjQ4MTk0IiwidXNlcklkIjoiMjUxMzY2IiwidHlwZUlkIjoiMWJjNTA3Y2MtYTMxZC00MTliLWI0OGEtZTVkOGUzYmMwODFiIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE2ODQxODc2OTcsImV4cCI6NDgzOTk0NzY5N30.nh4cnHbpY8g9HhG-gZ3wNtsxaQAbLrv2QkMKUUz27rU",
 });
@@ -97,10 +99,10 @@ async function fetch(user) {
 }
 
 export async function getTokensURI(address, id) {
-    const contract = await getNftURIContract(address)
-    const uri = await contract.tokenURI(id)
+    const contract = await getNftURIContract(address);
+    const uri = await contract.tokenURI(id);
     // console.log("uri", uri)
-    return uri
+    return uri;
 }
 
 export async function getContentByModelId(modelId) {
@@ -135,7 +137,44 @@ async function callModelGenAPI(_prompt) {
     }
 }
 
-async function callStaticContentGenAPI(_prompt) {
+async function createModelURI(_name, _prompt, image) {
+    // if (!_name || !_prompt || !image) return;
+    console.log("img:", image);
+    const data = JSON.stringify({ _name, _prompt, image });
+    const files = [new File([data], "data.json")];
+    const metaCID = await uploadToIPFS(files);
+    const url = `https://ipfs.io/ipfs/${metaCID}/data.json`;
+    console.log(url);
+    return url;
+}
+
+export async function createModelGenImage(_prompt) {
+    const image = await callModelGenAPI(_prompt);
+    return image;
+}
+
+export async function createModelGenAccountCreation(_name, _prompt, image) {
+    const uri = await createModelURI(_name, _prompt, image);
+    const contract = await getRegistryContract(true);
+    const tx = await contract.createModel(uri);
+    await tx.wait();
+    await fetchAllModels();
+    console.log("Account Created successfully");
+}
+
+async function createContentURI(_productImage, _prompt, image) {
+    // const image = await callStaticContentGenAPI(_prompt);
+    // if (!_productImage || !_prompt || !image) return;
+    console.log("img:", image);
+    const data = JSON.stringify({ _productImage, _prompt, image });
+    const files = [new File([data], "data.json")];
+    const metaCID = await uploadToIPFS(files);
+    const url = `https://ipfs.io/ipfs/${metaCID}/data.json`;
+    console.log(url);
+    return url;
+}
+
+async function callStaticContentGenAPI(_prompt, _productImage, _modelImage) {
     const apiUrl = "https://api.thecatapi.com/v1/images/search/";
 
     try {
@@ -147,40 +186,48 @@ async function callStaticContentGenAPI(_prompt) {
     }
 }
 
-async function createModelURI(_name, _prompt) {
-    const image = await callModelGenAPI(_prompt);
-    // if (!_name || !_prompt || !image) return;
-    console.log("img:", image);
-    const data = JSON.stringify({ _name, _prompt, image });
-    const files = [new File([data], "data.json")];
-    const metaCID = await uploadToIPFS(files);
-    const url = `https://ipfs.io/ipfs/${metaCID}/data.json`;
-    console.log(url);
-    return url;
+export async function getModelImageFromTBA(tba) {
+    allModels.filter((e) => {
+        if (e.tba == tba) {
+            // console.log("ddddd", e)
+            return e.modelImg;
+        }
+    });
 }
 
-export async function createModelGen(_name, _prompt) {
-    const uri = await createModelURI(_name, _prompt);
-    const contract = await getRegistryContract(true);
-    const tx = await contract.createModel(uri);
-    await tx.wait();
-    console.log("Account Created successfully");
+export async function getModelIdByTBA(tba) {
+    let result;
+    allModels.filter((e) => {
+        if (e.tba == tba) {
+            console.log("modelId inside using e.modelid", e.modelId);
+            result = e.modelId;
+            console.log('result inside the if block', result)
+        }
+        console.log("modelId out of e block", result)
+    });
+    console.log('result outside e fn', result)
+    return result
 }
 
-async function createContentURI(_productImage, _prompt) {
-    const image = await callStaticContentGenAPI(_prompt);
-    // if (!_productImage || !_prompt || !image) return;
-    console.log("img:", image);
-    const data = JSON.stringify({ _productImage, _prompt, image });
-    const files = [new File([data], "data.json")];
-    const metaCID = await uploadToIPFS(files);
-    const url = `https://ipfs.io/ipfs/${metaCID}/data.json`;
-    console.log(url);
-    return url;
+export async function createStaticContentImage(_prompt, _productImage, tba) {
+    const modelImage = await getModelImageFromTBA(tba);
+    const image = await callStaticContentGenAPI(
+        _prompt,
+        _productImage,
+        modelImage
+    );
+    return image;
 }
 
-export async function createStaticContent(_productImage, _prompt, _modelId) {
-    const uri = await createContentURI(_productImage, _prompt);
+export async function createStaticContentGeneration(
+    _productImage,
+    _prompt,
+    image,
+    tba
+) {
+    const _modelId = await getModelIdByTBA(tba);
+    const uri = await createContentURI(_productImage, _prompt, image);
+    console.log(_modelId, uri);
 
     const contract = await getRegistryContract(true);
     // const tx = await contract.callImageAdGen(_modelId, uri);
@@ -225,22 +272,20 @@ export async function buyModel(modelId, _price) {
 }
 
 export async function fetchAllModels() {
+    if (allModels.length > 0) return allModels;
+
     const contract = await getRegistryContract();
-    console.log("1")
 
     const modelGenAddress = await getModelGenAddress();
-
-    console.log("gen addr", modelGenAddress)
-    
     const modelGenContract = await getModelGenContract(false, modelGenAddress);
-
-    console.log("2")
 
     const data = await contract.fetchAllModel();
     // console.log("data", data)
     const items = await Promise.all(
         data.map(async (i) => {
-            const metadataUrl = await modelGenContract.tokenURI(i.modelId.toNumber());
+            const metadataUrl = await modelGenContract.tokenURI(
+                i.modelId.toNumber()
+            );
             const metadata = await axios.get(metadataUrl);
             let price = ethers.utils.formatEther(i.price);
             let item = {
@@ -260,7 +305,7 @@ export async function fetchAllModels() {
         })
     );
 
-    console.log("3")
+    console.log("3");
 
     allModels = items;
     console.log("All Models", items);
@@ -333,6 +378,6 @@ export async function getSigner() {
     const modal = new web3modal();
     const connection = await modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
-    const signer = provider.getSigner()
-    return signer
+    const signer = provider.getSigner();
+    return signer;
 }

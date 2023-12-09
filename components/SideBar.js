@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { usePathname } from "next/navigation";
 
 export default function SideBar () {
@@ -38,7 +37,7 @@ export default function SideBar () {
                 <span className="flex-1 ml-3 whitespace-nowrap">Create Post</span>
               </Link>
             </li>
-            <li>
+            {/* <li>
             <Link
                 href="/dashboard/analytics"
                 className={"flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 " + (isActive("/dashboard/nfts") ?"bg-gray-700" : "")}
@@ -47,7 +46,7 @@ export default function SideBar () {
                   <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
                 <span className="flex-1 ml-3 whitespace-nowrap">Analytics</span>
               </Link>
-            </li>
+            </li> */}
             <li>
             <Link
                 href="/dashboard/fetchmodels"
