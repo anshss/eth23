@@ -1,34 +1,46 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# TBAI
 
-## Getting Started
+<br/>
 
-First, run the development server:
+### About Project
+Anon and degen favoured decentralized social media platforms. It leverages AI and TBAs to cater towards anon's aspiring to be social media influencers using AI. Users need not upload any personal photos or images.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+<br />
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Fine-tuning feature powered by AI allows users to create content that truly reflects their individuality.
+- XMTP enables secure and private communication, overcoming privacy concerns prevalent in centralized platforms
+- The Graph offers users a comprehensive view of their activities, fostering a data-driven approach to personal expression and social interaction.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+<br/>
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Project Files
+eth23_hh_subst: theGraph substreams for this application <br />
+python-apis: AI apis for model and content generation <br />
+app: Next.js frontend to interact with smart contracts and AI apis <br />
 
-## Learn More
+<br />
 
-To learn more about Next.js, take a look at the following resources:
+### Authors
+Ansh Saxena <br />
+Nabeel Khan <br />
+Yash Jagtap <br />
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+<br />
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### Installation
 
-## Deploy on Vercel
+1. Clone the repo
+   ```sh
+   git clone https://github.com/anshss/eth23
+   
+   ```
+2. Install NPM packages
+   ```sh
+   npm install
+   ```
+   
+3. Start project
+   ```sh
+   npm run dev
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
