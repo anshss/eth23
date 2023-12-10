@@ -125,16 +125,28 @@ export async function getTBAFromModelId(modelId) {
     return data[0];
 }
 
-async function callModelGenAPI(payload) {
+async function callModelGenAPI(_prompt) {
     
-    const apiUrl = 'https://modelgen.pythonanywhere.com/generate-model-img'
+    const apiUrl = 'https://modelgen.pythonanywhere.com/generate-model-img/'
     try {
+
+        const payload = {
+            description: _prompt
+          };
+          
+
         const response = await axios.post(apiUrl, payload);
-        return response.data[0].url;
+        console.log(response.data.s3_public_url)
+        return response.data.s3_public_url;
     } catch (error) {
         console.error("Error fetching cat data:", error.message);
         return null;
     }
+}
+
+export async function createModelGenImage(_prompt) {
+    const image = await callModelGenAPI(_prompt);
+    return image;
 }
 
 async function createModelURI(_name, _prompt, image) {
@@ -146,11 +158,6 @@ async function createModelURI(_name, _prompt, image) {
     const url = `https://ipfs.io/ipfs/${metaCID}/data.json`;
     console.log(url);
     return url;
-}
-
-export async function createModelGenImage(_prompt) {
-    const image = await callModelGenAPI(_prompt);
-    return image;
 }
 
 export async function createModelGenAccountCreation(_name, _prompt, image) {
@@ -174,26 +181,49 @@ async function createContentURI(_productImage, _prompt, image) {
     return url;
 }
 
-async function callStaticContentGenAPI(payload) {
-    // _prompt, _productImage, _modelImage => has these three params
-    const apiUrl = "https://imgtoimg.pythonanywhere.com/generate-imgtoimg/";
+async function callStaticContentGenAPI(_prompt, _productImage, tba) {
+
+    const apiUrl = "https://api.thecatapi.com/v1/images/search/";
 
     try {
-        const response = await axios.post(apiUrl, payload);
+        const response = await axios.get(apiUrl);
         return response.data[0].url;
     } catch (error) {
         console.error("Error fetching cat data:", error.message);
         return null;
     }
+
+    
+    // // _prompt, _productImage, _modelImage => has these three params
+    // const apiUrl = "https://imgtoimg.pythonanywhere.com/generate-imgtoimg/";
+
+    // try {
+    //     const payload = {
+    //         image_url: _productImage,
+    //         user_prompt: _prompt
+    //       };
+
+    //     const response = await axios.post(apiUrl, payload);
+    //     console.log(response.data.s3_public_url)
+    //     return response.data.s3_public_url;
+    // } catch (error) {
+    //     console.error("Error fetching cat data:", error.message);
+    //     return null;
+    // }
 }
 
 export async function getModelImageFromTBA(tba) {
+    let result;
     allModels.filter((e) => {
         if (e.tba == tba) {
-            // console.log("ddddd", e)
-            return e.modelImg;
+            console.log("modelId inside using e.modelid", e.modelId);
+            result = e.modelImg;
+            console.log('result inside the if block', result)
         }
+        console.log("modelId out of e block", result)
     });
+    console.log('result outside e fn', result)
+    return result
 }
 
 export async function getModelIdByTBA(tba) {

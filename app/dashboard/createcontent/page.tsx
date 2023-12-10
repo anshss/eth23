@@ -1,11 +1,11 @@
 "use client";
 
-import { createStaticContentGeneration, createStaticContentImage } from "@/utils";
+import { createStaticContentGeneration, createStaticContentImage, uploadToIPFS } from "@/utils";
 import NavBar from "@/components/NavBar";
 import styled from "styled-components";
+import { saveAs } from "file-saver";
 import SideBar from "@/components/SideBar";
 import { useState } from "react";
-import { saveAs } from "file-saver";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -13,7 +13,7 @@ const CreateContent = () => {
     const [loading, setLoading] = useState(false);
     const [formInput, setFormInput] = useState({
         productDescription: "test-prompt",
-        productImage: "",
+        productImage: "https://imgs.search.brave.com/fMjT2xaCaaEmwj7XxIGT8pWtgqILDjU2zz0wXVggB8c/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90YXJn/ZXQuc2NlbmU3LmNv/bS9pcy9pbWFnZS9U/YXJnZXQvR1VFU1Rf/YTBjYThiOTItYjhl/Zi00ZjM3LTk5MDMt/ZjEwM2FjZTAyZTZl/P3dpZD04MDAmaGVp/PTgwMCZxbHQ9ODAm/Zm10PXBqcGVn",
         tba: "",
         fineTunePrompt: "test-prompt",
     });
@@ -58,7 +58,13 @@ const CreateContent = () => {
         setLoaders((e) => ({...e, createAccountLoader: false}));
     }
 
-    async function handleImageChange() {}
+    async function handleImageChange() {
+        const fileInput: any = document.getElementById('cover');
+        const filePath: any = fileInput.files[0].name;
+        const metaCID = await uploadToIPFS(fileInput.files)
+        console.log(`https://ipfs.io/ipfs/${metaCID}/${filePath}`)
+        return `https://ipfs.io/ipfs/${metaCID}/${filePath}`
+    }
 
     async function fineTuneCall() {
         setLoaders((e) => ({...e, createAccountLoader: true}));
