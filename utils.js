@@ -125,11 +125,11 @@ export async function getTBAFromModelId(modelId) {
     return data[0];
 }
 
-async function callModelGenAPI(_prompt) {
-    const apiUrl = "https://api.thecatapi.com/v1/images/search/";
-
+async function callModelGenAPI(payload) {
+    
+    const apiUrl = 'https://modelgen.pythonanywhere.com/generate-model-img'
     try {
-        const response = await axios.get(apiUrl);
+        const response = await axios.post(apiUrl, payload);
         return response.data[0].url;
     } catch (error) {
         console.error("Error fetching cat data:", error.message);
@@ -174,11 +174,12 @@ async function createContentURI(_productImage, _prompt, image) {
     return url;
 }
 
-async function callStaticContentGenAPI(_prompt, _productImage, _modelImage) {
-    const apiUrl = "https://api.thecatapi.com/v1/images/search/";
+async function callStaticContentGenAPI(payload) {
+    // _prompt, _productImage, _modelImage => has these three params
+    const apiUrl = "https://imgtoimg.pythonanywhere.com/generate-imgtoimg/";
 
     try {
-        const response = await axios.get(apiUrl);
+        const response = await axios.post(apiUrl, payload);
         return response.data[0].url;
     } catch (error) {
         console.error("Error fetching cat data:", error.message);
