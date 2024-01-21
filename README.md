@@ -22,8 +22,11 @@ app: Next.js frontend to interact with smart contracts and AI apis <br />
 
 ### Proof Of Reward
 
-https://devfolio.co/projects/tbai-0d73
+https://devfolio.co/projects/tbai-0d73 <br />
 The Graph: Best use of Substreams API 
+
+<br />
+
 
 ### Authors
 Ansh Saxena <br />
